@@ -4,11 +4,10 @@ from flask import Flask, request, render_template
 from werkzeug.utils import secure_filename
 from openai import OpenAI
 
-# Constantes
 UPLOAD_FOLDER = "uploads"
 MODEL_PATH = "models/pipeline.pkl"
 ALLOWED_EXTENSIONS = {"txt", "pdf"}
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")  # defina sua chave no ambiente
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 # Garante que a pasta de uploads existe
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -45,13 +44,8 @@ def read_pdf(path):
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Gera resposta automática baseada na IA com logs detalhados
+# Gera resposta automática baseada na IA
 def gerar_resposta_ia(categoria, texto):
-    """
-    Gera resposta usando OpenAI GPT.
-    Se houver erro, retorna mensagem neutra e registra o motivo.
-    Retorna também se a resposta veio da IA ou do fallback.
-    """
     prompt = (
         f"Você é um assistente que responde emails de clientes. "
         f"A categoria do email é '{categoria}'. "
@@ -68,12 +62,11 @@ def gerar_resposta_ia(categoria, texto):
         )
         resposta_ia = response.choices[0].message.content.strip()
         origem = "IA"
-        return resposta_ia, origem, None  # nenhum erro
+        return resposta_ia, origem, None
     except Exception as e:
-        # Captura e imprime detalhes completos do erro
         print("Erro ao gerar resposta com IA:", repr(e))
         origem = "Fallback"
-        mensagem_erro = repr(e)  # detalhe do erro
+        mensagem_erro = repr(e)
         return "Recebemos seu e-mail. Não foi possível gerar a resposta automática.", origem, mensagem_erro
 
 @app.route("/", methods=["GET", "POST"])
@@ -85,7 +78,7 @@ def index():
     confiança = None
 
     if request.method == "POST":
-        # Texto digitado no formulário
+        # Texto digitado
         email_text = request.form.get("email_text", "").strip()
 
         # Arquivo enviado
@@ -138,3 +131,4 @@ def index():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
+
