@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -42,6 +43,9 @@ pipeline.fit(X_train, y_train)
 score = pipeline.score(X_test, y_test)
 print(f"Acurácia no conjunto de teste: {score:.2f}")
 
-# === Salvar modelo treinado ===
-joblib.dump(pipeline, "models/pipeline.pkl")
+# === Criar pasta models se não existir ===
+os.makedirs("models", exist_ok=True)
+
+# === Salvar modelo treinado com protocol=4 para compatibilidade ===
+joblib.dump(pipeline, "models/pipeline.pkl", protocol=4)
 print("Modelo salvo em models/pipeline.pkl")
