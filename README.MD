@@ -1,12 +1,12 @@
-AutoU — Classificador de Emails com Resposta Automática
 
-Descrição
+# Classificador de Emails
 
-O AutoU é um MVP de um sistema de classificação de e-mails e geração de respostas automáticas, desenvolvido como parte de um desafio de IA.
-Ele é capaz de:
+Um sistema de classificação de emails e resposta automática em português. Ele classifica emails em produtivo ou improdutivo e sugere respostas automáticas apropriadas.
 
-Determinar se um e-mail é produtivo ou improdutivo.
+# Funcionalidades
 
-Sugerir automaticamente uma resposta adequada à categoria identificada.
+- Classificação de Emails: Determina se o conteúdo de um email …streamlit run app.py
 
-O projeto foi desenvolvido em Python, utilizando Streamlit para interface, scikit-learn e Hugging Face Transformers para a IA.
+```
+
+Abra o navegador no link fornecido pelo Streamlit e teste a classificação de emails.
