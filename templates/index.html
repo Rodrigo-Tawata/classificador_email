@@ -1,40 +1,84 @@
-<html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Desafio AutoU — Classificação de Emails</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <title>Classificador de Emails - AutoU</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #222;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            font-size: 14px;
+        }
+        input[type="file"] {
+            margin-top: 10px;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .resultado {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+        .label {
+            font-weight: bold;
+        }
+        .origem {
+            font-style: italic;
+            color: #555;
+        }
+        .erro {
+            margin-top: 10px;
+            font-style: italic;
+            color: red;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <h1>AutoU — Classificação e Resposta Automática</h1>
+    <h1>Classificador de Emails — AutoU</h1>
 
     <form method="POST" enctype="multipart/form-data">
-        <label for="email_text">Cole o texto do email:</label>
-        <textarea id="email_text" name="email_text" placeholder="Cole aqui o texto do email..."></textarea>
+        <label for="email_text">Digite o texto do email:</label>
+        <textarea name="email_text" id="email_text">{{ request.form.get('email_text','') }}</textarea>
 
-        <div class="or">OU</div>
+        <br>
+        <label for="file">Ou envie um arquivo (.txt ou .pdf):</label>
+        <input type="file" name="file" id="file">
 
-        <label for="file">Envie um arquivo (.txt ou .pdf):</label>
-        <input type="file" id="file" name="file" accept=".txt,.pdf">
-
-        <button type="submit">Analisar Email</button>
+        <br>
+        <button type="submit">Classificar e gerar resposta</button>
     </form>
 
     {% if categoria %}
     <div class="resultado">
-        <h2>Categoria: <span class="badge">{{ categoria }}</span></h2>
+        <p><span class="label">Categoria:</span> {{ categoria }}</p>
         {% if confiança %}
-            <p>Confiança: {{ (confiança*100)|round(2) }}%</p>
+        <p><span class="label">Confiança:</span> {{ "%.1f"|format(confiança*100) }}%</p>
         {% endif %}
-        <h3>Resposta sugerida</h3>
-        <div class="resposta">{{ resposta }}</div>
+        <p><span class="label">Resposta:</span> {{ resposta }}</p>
+        <p class="origem"><span class="label">Origem da resposta:</span> {{ origem_resposta }}</p>
+        {% if mensagem_erro %}
+        <p class="erro"><span class="label">Detalhes do erro da resposta por IA:</span> {{ mensagem_erro }}</p>
+        {% endif %}
     </div>
     {% endif %}
-
-    <footer>
-        <small>Desafio AutoU — projeto de demonstração</small>
-    </footer>
-</div>
 </body>
 </html>
