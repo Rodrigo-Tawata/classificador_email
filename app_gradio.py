@@ -4,15 +4,14 @@ import joblib
 import os
 import pdfplumber
 
-# Repo do Hugging Face Hub onde está o modelo
 REPO_ID = "RodrigoTKT/desafio-autou"
 FILENAME = "pipeline.pkl"
 
-# Caminho local do modelo
+
 MODEL_PATH = f"models/{FILENAME}"
 os.makedirs("models", exist_ok=True)
 
-# Tenta carregar o modelo local; se não existir, baixa do Hub
+
 model = None
 if os.path.exists(MODEL_PATH):
     model = joblib.load(MODEL_PATH)
@@ -21,13 +20,11 @@ else:
         print("Baixando modelo do Hugging Face Hub...")
         model_path_hf = hf_hub_download(repo_id=REPO_ID, filename=FILENAME)
         model = joblib.load(model_path_hf)
-        # opcional: salvar localmente para uso futuro
         joblib.dump(model, MODEL_PATH)
         print("Modelo carregado com sucesso!")
     except Exception as e:
         print("Não foi possível carregar o modelo:", e)
 
-# Função para gerar resposta automática
 def gerar_resposta(categoria, texto):
     cat = categoria.lower()
     if 'produtivo' in cat:
@@ -38,11 +35,9 @@ def gerar_resposta(categoria, texto):
     else:
         return "Obrigado pelo contato! Sua mensagem foi recebida."
 
-# Função principal para Gradio (texto ou arquivo)
 def analisar_email(email_text, email_file):
     text_content = ""
     
-    # Se houver upload de arquivo, processa ele
     if email_file is not None:
         filename = email_file.name
         if filename.endswith(".pdf"):
@@ -58,7 +53,6 @@ def analisar_email(email_text, email_file):
     if not text_content.strip():
         return "Nenhum texto fornecido", ""
 
-    # Classificação
     if model:
         categoria = model.predict([text_content])[0]
         try:
@@ -71,7 +65,6 @@ def analisar_email(email_text, email_file):
             categoria += f' (confiança: {confianca*100:.2f}%)'
         return categoria, resposta
     else:
-        # fallback simples baseado em palavras-chave
         keywords = ['preciso','erro','ajuda','solicito','contrato','documento','recurso','suporte','cancel']
         if any(k in text_content.lower() for k in keywords):
             categoria = 'produtivo'
@@ -80,7 +73,6 @@ def analisar_email(email_text, email_file):
         resposta = gerar_resposta(categoria, text_content)
         return categoria, resposta
 
-# Interface Gradio
 with gr.Blocks() as demo:
     gr.Markdown("# AutoU — Classificação e Resposta Automática de Emails")
     with gr.Row():
@@ -96,3 +88,4 @@ with gr.Blocks() as demo:
 
 if __name__ == '__main__':
     demo.launch()
+
