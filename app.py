@@ -1,10 +1,7 @@
-# app.py
 import os
 import joblib
 from flask import Flask, request, render_template
 from werkzeug.utils import secure_filename
-
-# OpenAI
 from openai import OpenAI
 
 # Constantes
