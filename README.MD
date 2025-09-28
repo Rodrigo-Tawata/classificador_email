@@ -43,3 +43,8 @@ streamlit run app.py
 
 Abra o navegador no link fornecido pelo Streamlit e teste a classificação de emails.
 
+#  🔧 Próximo Passo:
+- Aumentar dataset para melhorar a acurácia do modelo
+
+
+
